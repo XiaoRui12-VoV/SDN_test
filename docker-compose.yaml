@@ -1,0 +1,29 @@
+
+
+services:
+
+  faucet:
+    image: faucet/faucet:latest
+    container_name: faucet_container
+    volumes:
+      - ./faucet:/etc/faucet
+    ports:
+      - "6653:6653"      # OpenFlow 控制端口
+      - "9302:9302"      # Prometheus metrics (可选)
+    networks:
+      - sdn-net
+
+  mininet:
+    build:
+      context: ./mininet
+    container_name: mininet_container
+    stdin_open: true
+    tty: true
+    command: ["bash", "/start.sh"]
+    privileged: true
+    networks:
+      - sdn-net
+
+networks:
+  sdn-net:
+    driver: bridge
